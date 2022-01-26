@@ -142,7 +142,7 @@ def SignUp(request):
                 g.user_set.add(authuser)
                 if authuser:
                     userobj = User.objects.get(id=authuser.id)
-                    
+                    token1 = Token.objects.create(user=authuser)
                     b64UserId = urlsafe_base64_encode(str(userobj.id).encode('utf-8'))
                     myUserToken = default_token_generator.make_token(userobj)
                     
