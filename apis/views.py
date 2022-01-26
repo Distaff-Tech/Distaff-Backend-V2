@@ -121,17 +121,17 @@ def ReachUsEmail(request):
 #=============================
 
 
-@AppVersion_required
+# @AppVersion_required
 @csrf_exempt
 @api_view(['POST'])
 def SignUp(request):
     try:
         with transaction.atomic():
-            received_json_data = json.loads(request.body.decode('utf-8'), strict=False)
-            try:
-                user = User.objects.get(email = received_json_data['email'])
+            received_json_data = request.data
+            user = User.objects.filter(email = received_json_data['email'])
+            if len(user)>0:
                 return Response({"message" : errorEmailExist, "status" : "0"}, status=status.HTTP_201_CREATED)
-            except:
+            else:
                 authuser = User.objects.create(email = received_json_data['email'],
                                                 phone = received_json_data['phone'],
                                                 username = received_json_data['email'],
@@ -142,7 +142,7 @@ def SignUp(request):
                 g.user_set.add(authuser)
                 if authuser:
                     userobj = User.objects.get(id=authuser.id)
-                    
+                    token1 = Token.objects.create(user=authuser)
                     b64UserId = urlsafe_base64_encode(str(userobj.id).encode('utf-8'))
                     myUserToken = default_token_generator.make_token(userobj)
                     
@@ -222,12 +222,12 @@ def verifymail(request):
 #================================================
 # UPDATE DEVICE ID
 #================================================
-@AppVersion_required
+#@AppVersion_required
 @api_view(['POST'])
 def UpdateDeviceId(request):
     try:
         with transaction.atomic():
-            received_json_data = json.loads(request.body.decode('utf-8'), strict=False)
+            received_json_data = request.data
             device_Id = received_json_data['deviceId']
             API_key = request.META.get('HTTP_AUTHORIZATION')
             if API_key is not None:
@@ -391,13 +391,13 @@ def cancel_policy(request):
 #========================================
 # api for login user
 #========================================
-@AppVersion_required
+#@AppVersion_required
 @csrf_exempt
 @api_view(['POST'])
 def Applogin(request):
     try:
         with transaction.atomic():
-            received_json_data = json.loads(request.body.decode('utf-8'), strict=False)
+            received_json_data = request.data
             deviceId = received_json_data['deviceId']
             deviceType = received_json_data['deviceType']
             user = authenticate(username=received_json_data['email'], password=received_json_data['password'])
@@ -678,13 +678,13 @@ def SocialLogin(request):
 #======================================
 # api for create user profile
 #======================================
-@AppVersion_required
+#@AppVersion_required
 @csrf_exempt
 @api_view(['PUT'])
 def CreateProfile(request):
     try:
         with transaction.atomic():
-            received_json_data = json.loads(request.POST['data'], strict=False)
+            received_json_data = request.data
             API_key = request.META.get('HTTP_AUTHORIZATION')
             if API_key is not None:
                 try:
@@ -699,7 +699,7 @@ def CreateProfile(request):
                         fullname = received_json_data['fullname']
                         address = received_json_data['address']
                         gender = received_json_data['gender']
-                        date_of_birth = received_json_data['date_of_birth']
+                        # date_of_birth = received_json_data['date_of_birth']
                         about_me = received_json_data['about_me'] 
                         date_of_birth = datetime.datetime.strptime(received_json_data['date_of_birth'], '%Y-%m-%d')
                         is_from_edit = received_json_data['is_from_edit']
@@ -1068,7 +1068,7 @@ def ContactUsEmail(request):
 #===================================
 # logout app user
 #===================================
-@AppVersion_required
+# @AppVersion_required
 @api_view(['GET'])
 def logoutAppUser(request):
     try:
@@ -1177,7 +1177,7 @@ def getFabricSizeColour(request):
 def addPost(request):
     try:
         with transaction.atomic():
-            received_json_data = json.loads(request.data['data'], strict=False)
+            received_json_data = request.data
             try:
                 API_key = request.META.get('HTTP_AUTHORIZATION')
                 token1 = Token.objects.get(key=API_key)
@@ -1188,11 +1188,11 @@ def addPost(request):
             except:
                 return Response({"message": errorMessageUnauthorised, "status": "0"},status=status.HTTP_401_UNAUTHORIZED)
             nowTime = datetime.datetime.utcnow().replace(tzinfo=utc)
-            size = list(received_json_data['size'])
-            colour = list(received_json_data['colour'])
-            fabric = list(received_json_data['fabric'])
-            post = Post.objects.create(price = received_json_data['price'],
-                                        post_description = received_json_data['post_description'],
+            size = list(received_json_data['data']['size'])
+            colour = list(received_json_data['data']['colour'])
+            fabric = list(received_json_data['data']['fabric'])
+            post = Post.objects.create(price = received_json_data['data']['price'],
+                                        post_description = received_json_data['data']['post_description'],
                                         user_id = user.id,
                                         created_time = nowTime,
                                         post_status = 1)
@@ -2086,7 +2086,7 @@ def report_post(request):
 
 
 
-@AppVersion_required
+#@AppVersion_required
 @csrf_exempt
 @api_view(['GET'])
 def Userprofile(request,pk):
@@ -2409,9 +2409,10 @@ def getFollowing(request):
 
 
 
-@AppVersion_required
+#@AppVersion_required
 @api_view(['GET'])
-def getHomePage(request):  
+def getHomePage(request):
+    bnk_detail = {}
     try:
         with transaction.atomic():
             # received_json_data = json.loads(request.body, strict=False)
@@ -2430,7 +2431,7 @@ def getHomePage(request):
             try:
                 bnkdetail = BankDetail.objects.filter(user_id=user.id)
                 print(bnkdetail)
-                if bnkdetail is not None:
+                if len(bnkdetail) >0:
                     detailserializer = BankDetailSerializer(bnkdetail,many=True)
                     bnk_detail = detailserializer.data[0]
             except:
@@ -3407,12 +3408,12 @@ def PastOrders(request):
 from collections import defaultdict
 from pytz import timezone
 
-@AppVersion_required
+#@AppVersion_required
 @api_view(['POST'])
 def MyRequest(request):
     try:
         with transaction.atomic():
-            received_json_data = json.loads(request.body.decode('utf-8'), strict=False)
+            received_json_data = request.data
             API_key = request.META.get('HTTP_AUTHORIZATION')
             if API_key is not None:
                 try:
@@ -3424,7 +3425,7 @@ def MyRequest(request):
                     return Response({"message": "Session expired!! please login again", "status": "0"},
                                     status=status.HTTP_401_UNAUTHORIZED)
                 if checkGroup:
-                    page_num = request.GET['page_num']
+                    page_num = received_json_data['page_num']
                     # orderpostobj = OrderPost.objects.filter(post_id__user_id=user.id, order_status="PENDING").order_by('-created_time')
 
                     orderpostobj = OrderPost.objects.filter(post_id__user_id=user.id).exclude(seller_status = -1 ).order_by('-created_time')
