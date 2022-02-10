@@ -252,7 +252,7 @@ def UpdateDeviceId(request):
 #send verify link
 # ================================================== 
 
-@AppVersion_required
+# @AppVersion_required
 @api_view(['POST'])
 def SendVerifyLink(request):
     try:
@@ -479,7 +479,7 @@ def Applogin(request):
 #====================================================
 # social login via instagram,facebook,gmail
 #====================================================
-@AppVersion_required
+# @AppVersion_required
 @csrf_exempt
 @api_view(['POST'])
 def SocialLogin(request):
@@ -782,7 +782,7 @@ def CreateProfile(request):
 #==========================================
 # api for change password
 #==========================================
-@AppVersion_required
+# @AppVersion_required
 @csrf_exempt
 @api_view(['POST'])
 def ChangePassword(request):
@@ -891,7 +891,7 @@ def ChangePassword(request):
 #========================================
 # API for add new address
 #========================================
-@AppVersion_required
+# @AppVersion_required
 @csrf_exempt
 @api_view(['POST'])
 def addAddress(request):
@@ -938,7 +938,7 @@ def addAddress(request):
 #=========================================
 # API for delete address
 #=========================================
-@AppVersion_required
+# @AppVersion_required
 @api_view(['POST'])
 def deleteAddress(request):
     try:
@@ -966,7 +966,7 @@ def deleteAddress(request):
 #=====================================
 # API for get list of address
 #=====================================
-@AppVersion_required
+# @AppVersion_required
 @api_view(['GET'])
 def getAddresses(request):
     try:
@@ -1012,7 +1012,7 @@ def getAddresses(request):
 #================================
 #contact us 
 #=================================
-@AppVersion_required
+# @AppVersion_required
 @api_view(['POST'])
 def ContactUsEmail(request):
     try:
@@ -1096,7 +1096,7 @@ def logoutAppUser(request):
 #GET size and colour
 #=====================================
 
-@AppVersion_required
+# @AppVersion_required
 @api_view(['GET'])
 def getFabricSizeColour(request):  
     try:
@@ -1172,7 +1172,7 @@ def getFabricSizeColour(request):
 #         print(traceback.format_exc())
 #         return Response({"message" : errorMessage, "status" : "0"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-@AppVersion_required
+# @AppVersion_required
 @api_view(['POST'])
 def addPost(request):
     try:
@@ -1263,7 +1263,7 @@ def addPost(request):
 #         print(traceback.format_exc())
 #         return Response({"message" : errorMessage, "status" : "0"},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-@AppVersion_required
+# @AppVersion_required
 @csrf_exempt
 @api_view(['GET'])
 def getPost(request,pk):
@@ -1412,7 +1412,7 @@ def getPost(request,pk):
 #====================================
 # Api for delete post
 #====================================
-@AppVersion_required
+# @AppVersion_required
 @api_view(['POST'])
 def deletePost(request):
     try:
@@ -1502,7 +1502,7 @@ def deletePost(request):
 #======================================
 # Api for favourite and unfavourite post
 # =====================================
-@AppVersion_required
+# @AppVersion_required
 @csrf_exempt
 @api_view(['POST'])
 def setFavPost(request):
@@ -1550,7 +1550,7 @@ def setFavPost(request):
 #=============================================
 # Api for get list of favourite posts
 #=============================================
-@AppVersion_required
+# @AppVersion_required
 @api_view(['GET'])
 def getFavouritePost(request):  
     try:
@@ -1616,7 +1616,7 @@ def getFavouritePost(request):
 #======================================
 # Api for add post comment
 #======================================
-@AppVersion_required
+# @AppVersion_required
 @api_view(['POST'])
 def addPostComment(request):
     try:
@@ -1670,7 +1670,7 @@ def addPostComment(request):
 #===================================
 # Api for delete post comment
 #====================================
-@AppVersion_required
+# @AppVersion_required
 @api_view(['POST'])
 def deletePostComment(request):
     try:
@@ -1704,7 +1704,7 @@ def deletePostComment(request):
 #====================================================
 # Api for get list of comments for a particular post
 #====================================================
-@AppVersion_required
+# @AppVersion_required
 @api_view(['GET'])
 def GetPostComment(request,pk):  
     try:
@@ -1750,7 +1750,7 @@ def GetPostComment(request,pk):
 #=========================================
 # Api for send message
 #=========================================
-@AppVersion_required
+# @AppVersion_required
 @api_view(["POST"])
 def sendMessage(request):
     try:
@@ -1811,7 +1811,7 @@ def sendMessage(request):
 #===========================================
 #Api for get message
 #===========================================
-@AppVersion_required
+# @AppVersion_required
 @api_view(['POST'])
 def getMessage(request):  # chat one to one
     try:
@@ -1848,7 +1848,7 @@ def getMessage(request):  # chat one to one
 #===============================================
 #Api for get chat history
 #===============================================
-@AppVersion_required
+# @AppVersion_required
 @api_view(['GET'])
 def chatHistory(request): # get latest messages
     try:
@@ -1908,7 +1908,7 @@ def chatHistory(request): # get latest messages
 #=========================================
 #Api for delete message
 #=========================================
-@AppVersion_required
+# @AppVersion_required
 @api_view(["POST"])
 def deleteMessage(request):
     try:
@@ -1997,7 +1997,7 @@ def deleteMessage(request):
 #=======================================
 #Api for report post by user
 #=======================================
-@AppVersion_required
+# @AppVersion_required
 @csrf_exempt
 @api_view(['POST'])
 def report_post(request):
@@ -2105,6 +2105,8 @@ def Userprofile(request,pk):
             user1 = User.objects.get(pk=pk)
           
             serializer = UserSerializer(user1).data
+            if serializer['image']:
+                serializer['image'] = request.build_absolute_uri(user1.image)
             follow = FollowUser.objects.filter(follow_by_id = user.id, follow_to_id = user1.id)
             
             posts = Post.objects.filter(user_id=user.id,post_status=1)
@@ -2147,7 +2149,7 @@ def dictfetchall(cursor):
         for row in cursor.fetchall()
     ]
 
-@AppVersion_required
+# @AppVersion_required
 @csrf_exempt
 @api_view(['POST'])
 def searchUser(request):
@@ -2216,7 +2218,7 @@ def searchUser(request):
 #========================================================
 #Set  User Folllower and following
 # ======================================================= 
-@AppVersion_required
+# @AppVersion_required
 @csrf_exempt
 @api_view(['POST'])
 def setFollow(request):
@@ -2292,7 +2294,7 @@ def setFollow(request):
 # Get user followers
 #=========================================================
 
-@AppVersion_required
+# @AppVersion_required
 @api_view(['POST'])
 def getFollowers(request):  
     try:
@@ -2352,7 +2354,7 @@ def getFollowers(request):
 #====================================================================
 #Get user Following
 #====================================================================
-@AppVersion_required
+# @AppVersion_required
 @api_view(['POST'])
 def getFollowing(request):  
     try:
@@ -2485,7 +2487,7 @@ def getHomePage(request):
 #================================================
 # Set user On Off notification
 #=================================================
-@AppVersion_required
+# @AppVersion_required
 @api_view(['POST'])
 def SetOnOffNotification(request):
     try:
@@ -2663,7 +2665,7 @@ def SendAcceptOrderNotification(order_id,title,tag,sender_id,receiver_id):
 #likedislike
 #=================================
 
-@AppVersion_required
+# @AppVersion_required
 @csrf_exempt
 @api_view(['POST'])
 def LikedislikePost(request):
@@ -2740,7 +2742,7 @@ def LikedislikePost(request):
 #================================================
 # Add post into cart
 #================================================
-@AppVersion_required
+# @AppVersion_required
 @api_view(['POST'])
 def AddToCart(request):
     try:
@@ -2791,7 +2793,7 @@ def AddToCart(request):
 #==============================================
 # Get posts from cart
 #==============================================
-@AppVersion_required
+# @AppVersion_required
 @api_view(['GET'])
 def ShowCartPosts(request):
     try:
@@ -2853,7 +2855,7 @@ def ShowCartPosts(request):
 #=============================================================
 # Delete post from cart
 #=============================================================
-@AppVersion_required
+# @AppVersion_required
 @api_view(['POST'])
 def DeletePostFromCart(request):
     try:
@@ -2886,7 +2888,7 @@ def DeletePostFromCart(request):
 #======================================
 #Add Card
 #======================================
-@AppVersion_required
+# @AppVersion_required
 @api_view(['POST'])
 def AddCard(request):
     try:
@@ -2995,7 +2997,7 @@ def AddCard(request):
         print(traceback.format_exc())
         return Response({"message": errorMessage, "status": "0"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-@AppVersion_required
+# @AppVersion_required
 @api_view(['GET'])
 def Get_List_Cards(request):
     try:
@@ -3049,7 +3051,7 @@ def Get_List_Cards(request):
         print(traceback.format_exc())
         return Response({"message": errorMessage}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-@AppVersion_required
+# @AppVersion_required
 @api_view(['POST'])
 def DeleteCard(request):
     try:
@@ -3093,7 +3095,7 @@ def DeleteCard(request):
 #Payment and Order Creation
 #==========================================================
 from decimal import *
-@AppVersion_required
+# @AppVersion_required
 @api_view(['POST'])
 def OrderCreate(request):
     try:
@@ -3233,7 +3235,7 @@ def SendSetFollowNotification(senderId, receiverId,title,message,tag,table_id):
 #==========================================================
 # Accept/Reject Order
 #==========================================================
-@AppVersion_required
+# @AppVersion_required
 @api_view(['POST'])
 def AcceptRejectOrder(request):
     try:
@@ -3303,7 +3305,7 @@ def AcceptRejectOrder(request):
 from collections import defaultdict
 
 
-@AppVersion_required
+# @AppVersion_required
 @api_view(['POST'])
 def PastOrders(request):
     try:
@@ -3512,7 +3514,7 @@ def MyRequest(request):
 #Order Delete
 #====================================================
 
-@AppVersion_required
+# @AppVersion_required
 @api_view(['POST'])
 def OrderDelete(request):
     try:
@@ -3550,7 +3552,7 @@ def OrderDelete(request):
 #Order Detail
 #======================================================
 
-@AppVersion_required
+# @AppVersion_required
 @api_view(['POST'])
 def OrderDetail(request):
     try:
@@ -3628,7 +3630,7 @@ def OrderDetail(request):
 # Cancel Order
 #======================================================
 
-@AppVersion_required
+# @AppVersion_required
 @api_view(['POST'])
 def CancelOrder(request):
     try:
@@ -3663,7 +3665,7 @@ def CancelOrder(request):
 #====================================================
 
 @api_view(['GET'])
-@AppVersion_required
+# @AppVersion_required
 def GetNotificationList(request):
     try:
         with transaction.atomic():
@@ -3731,7 +3733,7 @@ def GetNotificationList(request):
 # delete notification
 #================================================
 
-@AppVersion_required
+# @AppVersion_required
 @api_view(['GET'])
 def DeleteNotification(request):
     try:
@@ -3770,7 +3772,7 @@ def priceindecimal(postjson):
 #                           Custom design
 ##############################################################################################
 
-@AppVersion_required
+# @AppVersion_required
 @api_view(['GET'])
 def getCustomList(request):  
     try:
@@ -5555,7 +5557,7 @@ def clear_due_payment(request):
 #======================================
 # api for  add pattern
 #======================================
-@AppVersion_required
+# @AppVersion_required
 @csrf_exempt
 @api_view(['PUT'])
 def Add_Patterns(request):
@@ -5597,7 +5599,7 @@ def Add_Patterns(request):
 #======================================
 # api for  add shapes
 #======================================
-@AppVersion_required
+# @AppVersion_required
 @csrf_exempt
 @api_view(['PUT'])
 def Add_Shapes(request):
@@ -5642,7 +5644,7 @@ def Add_Shapes(request):
 #======================================
 # api for  add cloth style
 #======================================
-@AppVersion_required
+# @AppVersion_required
 @csrf_exempt
 @api_view(['PUT'])
 def Add_Cloth_Style(request):
@@ -5677,7 +5679,7 @@ def Add_Cloth_Style(request):
 #======================================
 # api for  add cloth style colour
 #======================================
-@AppVersion_required
+# @AppVersion_required
 @csrf_exempt
 @api_view(['PUT'])
 def Add_Cloth_Style_colour(request):
@@ -5721,7 +5723,7 @@ def Add_Cloth_Style_colour(request):
 #=============================================
 # api for  add cloth style colour Images
 #=============================================
-@AppVersion_required
+# @AppVersion_required
 @csrf_exempt
 @api_view(['PUT'])
 def Add_Cloth_Style_colour_Images(request):
@@ -5760,7 +5762,7 @@ def Add_Cloth_Style_colour_Images(request):
 #======================================
 # api for shape colour
 #======================================
-@AppVersion_required
+# @AppVersion_required
 @csrf_exempt
 @api_view(['PUT'])
 def Shape_Colour(request):
@@ -5799,7 +5801,7 @@ def Shape_Colour(request):
 #======================================
 # api for sew
 #======================================
-@AppVersion_required
+# @AppVersion_required
 @csrf_exempt
 @api_view(['PUT'])
 def Seww(request):
